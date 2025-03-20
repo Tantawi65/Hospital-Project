@@ -1,58 +1,63 @@
+# hospital/models.py
+import django
 from django.db import models
 from django.contrib.auth.models import User
 
-
-
-departments=[('Cardiologist','Cardiologist'),
-('Dermatologists','Dermatologists'),
-('Emergency Medicine Specialists','Emergency Medicine Specialists'),
-('Allergists/Immunologists','Allergists/Immunologists'),
-('Anesthesiologists','Anesthesiologists'),
-('Colon and Rectal Surgeons','Colon and Rectal Surgeons')
+departments = [
+    ('Cardiologist', 'Cardiologist'),
+    ('Dermatologists', 'Dermatologists'),
+    ('Emergency Medicine Specialists', 'Emergency Medicine Specialists'),
+    ('Allergists/Immunologists', 'Allergists/Immunologists'),
+    ('Anesthesiologists', 'Anesthesiologists'),
+    ('Colon and Rectal Surgeons', 'Colon and Rectal Surgeons')
 ]
+
 class Doctor(models.Model):
-    user=models.OneToOneField(User,on_delete=models.CASCADE)
-    profile_pic= models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_pic = models.ImageField(upload_to='profile_pic/DoctorProfilePic/', null=True, blank=True)
     address = models.CharField(max_length=40)
-    mobile = models.CharField(max_length=20,null=True)
-    department= models.CharField(max_length=50,choices=departments,default='Cardiologist')
-    status=models.BooleanField(default=False)
+    mobile = models.CharField(max_length=20, null=True)
+    department = models.CharField(max_length=50, choices=departments, default='Cardiologist')
+    status = models.BooleanField(default=False)
+
     @property
     def get_name(self):
-        return self.user.first_name+" "+self.user.last_name
+        return self.user.first_name + " " + self.user.last_name
+
     @property
     def get_id(self):
         return self.user.id
+
     def __str__(self):
-        return "{} ({})".format(self.user.first_name,self.department)
-
-
+        return "{} ({})".format(self.user.first_name, self.department)
 
 class Patient(models.Model):
-    user=models.OneToOneField(User,on_delete=models.CASCADE)
-    profile_pic= models.ImageField(upload_to='profile_pic/PatientProfilePic/',null=True,blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_pic = models.ImageField(upload_to='profile_pic/PatientProfilePic/', null=True, blank=True)
     address = models.CharField(max_length=40)
-    mobile = models.CharField(max_length=20,null=False)
-    symptoms = models.CharField(max_length=100,null=False)
+    mobile = models.CharField(max_length=20, null=False)
+    symptoms = models.CharField(max_length=100, null=False)
     assignedDoctorId = models.PositiveIntegerField(null=True)
-    admitDate=models.DateField(auto_now=True)
-    status=models.BooleanField(default=False)
+    admitDate = models.DateField(auto_now=True)
+    status = models.BooleanField(default=False)
+
     @property
     def get_name(self):
-        return self.user.first_name+" "+self.user.last_name
+        return self.user.first_name + " " + self.user.last_name
+
     @property
     def get_id(self):
         return self.user.id
+
     def __str__(self):
-        return self.user.first_name+" ("+self.symptoms+")"
-    
+        return self.user.first_name + " (" + self.symptoms + ")"
 
 class Nurse(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_pic = models.ImageField(upload_to='profile_pic/NurseProfilePic/', null=True, blank=True)
-    address = models.CharField(max_length=40, default="Unknown")  # ✅ Added default value
-    mobile = models.CharField(max_length=20, null=False, default='')  # Add default value
-    assignedWard = models.CharField(max_length=100, null=False)  # ✅ Make sure this field exists
+    address = models.CharField(max_length=40, default="Unknown")
+    mobile = models.CharField(max_length=20, null=False, default='')
+    assignedWard = models.CharField(max_length=100, null=False)
     hireDate = models.DateField(auto_now=True)
     status = models.BooleanField(default=True)
 
@@ -67,32 +72,39 @@ class Nurse(models.Model):
     def __str__(self):
         return self.user.first_name + " (" + self.assignedWard + ")"
 
-
 class Appointment(models.Model):
-    patientId=models.PositiveIntegerField(null=True)
-    doctorId=models.PositiveIntegerField(null=True)
-    patientName=models.CharField(max_length=40,null=True)
-    doctorName=models.CharField(max_length=40,null=True)
-    appointmentDate=models.DateField(auto_now=True)
-    description=models.TextField(max_length=500)
-    status=models.BooleanField(default=False)
+    STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Cancelled', 'Cancelled'),
+        ('Completed', 'Completed'),
+    )
 
+    patientId = models.PositiveIntegerField(null=True)
+    doctorId = models.PositiveIntegerField(null=True)
+    patientName = models.CharField(max_length=40, null=True)
+    doctorName = models.CharField(max_length=40, null=True)
+    appointmentDate = models.DateTimeField(null=True, blank=True)
+    description = models.TextField(max_length=500)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    created_at = models.DateTimeField(auto_now_add=True)  # Removed default
+    updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"Appointment: {self.patientName} with {self.doctorName} on {self.appointmentDate}"
 
 class PatientDischargeDetails(models.Model):
-    patientId=models.PositiveIntegerField(null=True)
-    patientName=models.CharField(max_length=40)
-    assignedDoctorName=models.CharField(max_length=40)
+    patientId = models.PositiveIntegerField(null=True)
+    patientName = models.CharField(max_length=40)
+    assignedDoctorName = models.CharField(max_length=40)
     address = models.CharField(max_length=40)
-    mobile = models.CharField(max_length=20,null=True)
-    symptoms = models.CharField(max_length=100,null=True)
-
-    admitDate=models.DateField(null=False)
-    releaseDate=models.DateField(null=False)
-    daySpent=models.PositiveIntegerField(null=False)
-
-    roomCharge=models.PositiveIntegerField(null=False)
-    medicineCost=models.PositiveIntegerField(null=False)
-    doctorFee=models.PositiveIntegerField(null=False)
-    OtherCharge=models.PositiveIntegerField(null=False)
-    total=models.PositiveIntegerField(null=False)
+    mobile = models.CharField(max_length=20, null=True)
+    symptoms = models.CharField(max_length=100, null=True)
+    admitDate = models.DateField(null=False)
+    releaseDate = models.DateField(null=False)
+    daySpent = models.PositiveIntegerField(null=False)
+    roomCharge = models.PositiveIntegerField(null=False)
+    medicineCost = models.PositiveIntegerField(null=False)
+    doctorFee = models.PositiveIntegerField(null=False)
+    OtherCharge = models.PositiveIntegerField(null=False)
+    total = models.PositiveIntegerField(null=False)

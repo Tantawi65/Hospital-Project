@@ -50,6 +50,12 @@
     .menu {
       top: 50px;
     }
+
+    .errorlist {
+      color: red;
+      font-size: 0.9em;
+      margin-top: 5px;
+    }
   </style>
 
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -67,29 +73,44 @@
   </div>
 {% endif %}
 
-<!------ add appointment page by patient ---------->
+<!------ reschedule appointment page by patient  ---------->
 <form method="post">
   {% csrf_token %}
   <div class="container register-form">
     <div class="form">
       <div class="note">
-        <p>Book Appointment Details</p>
+        <p>Reschedule Appointment</p>
       </div>
       <div class="form-content">
         <div class="row">
           <div class="col-md-12">
+            <p><strong>Doctor:</strong> {{ appointment.doctorName }}</p>
+            <p><strong>Current Date and Time:</strong> {{ appointment.appointmentDate|date:"d M Y, H:i" }}</p>
             <div class="form-group">
+              <label for="id_appointmentDate">New Appointment Date and Time</label>
+              {% render_field appointmentForm.appointmentDate class="form-control" placeholder="New Appointment Date and Time" %}
+              {% if appointmentForm.appointmentDate.errors %}
+                <div class="errorlist">
+                  {% for error in appointmentForm.appointmentDate.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="form-group">
+              <label for="id_description">Description</label>
               {% render_field appointmentForm.description class="form-control" placeholder="Description" %}
-            </div>
-            <div class="form-group">
-              {% render_field appointmentForm.doctorId class="form-control" placeholder="Doctor" %}
-            </div>
-            <div class="form-group">
-              {% render_field appointmentForm.appointmentDate class="form-control" placeholder="Appointment Date and Time" %}
+              {% if appointmentForm.description.errors %}
+                <div class="errorlist">
+                  {% for error in appointmentForm.description.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
           </div>
         </div>
-        <button type="submit" class="btnSubmit">Book</button>
+        <button type="submit" class="btnSubmit">Reschedule</button>
         <a href="{% url 'patient-view-appointment' %}" class="btnCancel">Cancel</a>
       </div>
     </div>

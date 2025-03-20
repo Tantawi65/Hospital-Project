@@ -37,6 +37,16 @@
       color: #fff;
     }
 
+    .btnCancel {
+      border: none;
+      border-radius: 1.5rem;
+      padding: 1%;
+      width: 20%;
+      cursor: pointer;
+      background: #6c757d;
+      color: #fff;
+    }
+
     .menu {
       top: 50px;
     }
@@ -47,7 +57,7 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <br><br>
-<!------ add appointment page by admin(sumit)  ---------->
+<!------ add appointment page by admin  ---------->
 <form method="post">
   {% csrf_token %}
   <div class="container register-form">
@@ -62,25 +72,21 @@
               {% render_field appointmentForm.description class="form-control" placeholder="Description" %}
             </div>
             <div class="form-group">
-              {% render_field appointmentForm.doctorId class="form-control" placeholder="doctor" %}
+              {% render_field appointmentForm.doctorId class="form-control" placeholder="Doctor" %}
             </div>
             <div class="form-group">
-              {% render_field appointmentForm.patientId class="form-control" placeholder="patient" %}
+              {% render_field appointmentForm.patientId class="form-control" placeholder="Patient" %}
             </div>
-
+            <div class="form-group">
+              {% render_field appointmentForm.appointmentDate class="form-control" placeholder="Appointment Date and Time" %}
+            </div>
           </div>
-
         </div>
         <button type="submit" class="btnSubmit">Book</button>
+        <a href="{% url 'admin-view-appointment' %}" class="btnCancel">Cancel</a>
       </div>
     </div>
   </div>
 </form>
-
-<!--
-developed By : sumit kumar
-facebook : fb.com/sumit.luv
-youtube : youtube.com/lazycoders
--->
 
 {% endblock content %}

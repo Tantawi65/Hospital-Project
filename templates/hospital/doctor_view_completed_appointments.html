@@ -1,7 +1,6 @@
 {% extends 'hospital/doctor_base.html' %}
 {% block content %}
 {% load static %}
-{% load tz %} 
 
 <head>
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -21,23 +20,8 @@
       margin: 100px;
     }
 
-    .status-pending {
-      color: orange;
-      font-weight: bold;
-    }
-
-    .status-approved {
-      color: blue;
-      font-weight: bold;
-    }
-
     .status-completed {
       color: green;
-      font-weight: bold;
-    }
-
-    .status-cancelled {
-      color: red;
       font-weight: bold;
     }
   </style>
@@ -53,7 +37,7 @@
   {% endif %}
   <div class="panel panel-primary">
     <div class="panel-heading">
-      <h6 class="panel-title">Your Appointments</h6>
+      <h6 class="panel-title">Completed Appointments</h6>
     </div>
     {% if appointments %}
     <table class="table table-hover" id="dev-table">
@@ -66,10 +50,9 @@
           <th>Address</th>
           <th>Appointment Date</th>
           <th>Status</th>
-          <th>Actions</th>
         </tr>
       </thead>
-      {% for a, p, can_mark_completed in appointments %}
+      {% for a, p in appointments %}
       <tr>
         <td>{{ a.patientName }}</td>
         <td>
@@ -82,21 +65,17 @@
         <td>{{ a.description }}</td>
         <td>{{ p.mobile|default:"N/A" }}</td>
         <td>{{ p.address|default:"N/A" }}</td>
-        <td>{% localtime on %}{{ a.appointmentDate|date:"d M Y, H:i" }}{% endlocaltime %}</td>
+        <td>{{ a.appointmentDate|date:"d M Y, H:i" }}</td>
         <td class="status-{{ a.status|lower }}">{{ a.status }}</td>
-        <td>
-          {% if can_mark_completed %}
-            <a class="btn btn-success btn-xs" href="{% url 'doctor-mark-appointment-completed' a.id %}">Mark as Completed</a>
-          {% endif %}
-        </td>
       </tr>
       {% endfor %}
     </table>
     {% else %}
     <br><br>
-    <h4 style="text-align: center; color: red;">No Appointments Found!</h4>
+    <h4 style="text-align: center; color: red;">No Completed Appointments Found!</h4>
     {% endif %}
   </div>
 </div>
+
 
 {% endblock content %}

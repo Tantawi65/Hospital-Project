@@ -20,10 +20,7 @@
     }
   </style>
 </head>
-<!--
-written By : sumit kumar
-facebook : fb.com/sumit.luv
--->
+
 <div class="container">
   <div class="panel panel-primary">
     <div class="panel-heading">
@@ -36,23 +33,21 @@ facebook : fb.com/sumit.luv
           <th>Patient Name</th>
           <th>Description</th>
           <th>Date</th>
+          <th>Status</th>
         </tr>
       </thead>
       {% for a in appointments %}
       <tr>
-        <td> {{a.doctorName}}</td>
-        <td>{{a.patientName}}</td>
-        <td>{{a.description}}</td>
-        <td>{{a.appointmentDate}}</td>
+        <td>{{ a.doctorName }}</td>
+        <td>{{ a.patientName }}</td>
+        <td>{{ a.description }}</td>
+        <td>{{ a.appointmentDate|date:"d M Y, H:i" }}</td>
+        <td>{{ a.status }}</td>
       </tr>
       {% endfor %}
     </table>
   </div>
 </div>
-<!--
-developed By : sumit kumar
-facebook : fb.com/sumit.luv
-youtube : youtube.com/lazycoders
--->
+
 
 {% endblock content %}

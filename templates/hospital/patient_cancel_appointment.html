@@ -1,0 +1,74 @@
+{% extends 'hospital/patient_base.html' %}
+{% block content %}
+
+<head>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    h6 {
+      text-align: center;
+    }
+
+    .row {
+      margin: 100px;
+    }
+
+    .btnSubmit {
+      border: none;
+      border-radius: 1.5rem;
+      padding: 1%;
+      width: 20%;
+      cursor: pointer;
+      background: #dc3545;
+      color: #fff;
+    }
+
+    .btnCancel {
+      border: none;
+      border-radius: 1.5rem;
+      padding: 1%;
+      width: 20%;
+      cursor: pointer;
+      background: #6c757d;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h6 class="panel-title">Cancel Appointment</h6>
+        </div>
+        <div class="panel-body">
+          <p>Are you sure you want to cancel the following appointment?</p>
+          <p><strong>Doctor:</strong> {{ appointment.doctorName }}</p>
+          <p><strong>Date and Time:</strong> {{ appointment.appointmentDate|date:"d M Y, H:i" }}</p>
+          <p><strong>Description:</strong> {{ appointment.description }}</p>
+          <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btnSubmit">Yes, Cancel</button>
+            <a href="{% url 'patient-view-appointment' %}" class="btnCancel">No, Go Back</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
